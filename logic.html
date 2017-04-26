@@ -1,0 +1,314 @@
+<html>
+<head>
+	<title> Logic Gates </title>
+</head>
+
+<canvas id="c" width="100" height="100" style="position: absolute; top: 0; left: 0;" ></canvas>
+
+<script>
+	
+	var canvas = document.getElementById("c");
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	var ctx = canvas.getContext("2d");
+
+	ctx.fillStyle = "#006699";
+	ctx.fillRect(0,0,window.innerWidth, window.innerHeight);
+
+	var image_NOT = new Image();
+	image_NOT.src = "NOT.png";
+
+	var image_AND = new Image();
+	image_AND.src = "AND.png";
+
+	var image_NAND = new Image();
+	image_NAND.src = "NAND.png";
+
+	var image_OR = new Image();
+	image_OR.src = "OR.png";
+
+	var image_NOR = new Image();
+	image_NOR.src = "NOR.png";
+
+
+
+
+	class connection{
+		constructor(){
+			this.value = 0;
+			this.x_s = 0;
+			this.y_s = 0;
+			this.x_e = 0;
+			this.y_e = 0;	
+		}
+
+		set( x, y, x_e, y_e ){
+			this.x_s = x;
+			this.y_s = y;
+			this.x_e = x_e;
+			this.y_e = y_e;	
+		}
+
+		draw(){
+
+			ctx.lineWidth = 5;
+
+			if( this.value == 0 ){
+				ctx.strokeStyle = "#000";
+				ctx.beginPath();
+				ctx.moveTo( this.x_s, this.y_s );
+				ctx.lineTo( this.x_e, this.y_e );
+				ctx.stroke();
+
+			}else{
+				ctx.strokeStyle = "#00ff00";
+				ctx.beginPath();
+				ctx.moveTo( this.x_s, this.y_s );
+				ctx.lineTo( this.x_e, this.y_e );
+				ctx.stroke();ctx.strokeStyle = "#000";
+
+			}
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	class GATE_NOT{
+		constructor(){
+			this.x = 100;
+			this.y = 100;
+			this.width = 100;
+			this.height = 100;
+			this.input = 0;
+			this.output = 0;
+			this.type = "NOT";
+
+			this.connect_out_x = this.x + this.width;
+			this.connect_out_y = this.y + this.height/2;
+
+			this.connect_in1_x = 500;
+			this.connect_in1_y = 500;
+
+			this.connect_in1 = new connection();
+		}
+
+
+		print(){
+			console.log("NOT gate:");
+			console.log("\tx: " + this.x);
+			console.log("\ty: " + this.y);
+			console.log("\tin: " + this.input);
+			console.log("\tout: " + this.output);
+		}
+
+		draw(){
+			this.connect_in1.draw();
+			ctx.drawImage( image_NOT, this.x, this.y, this.width, this.height );
+		}
+
+
+		set_param( x, y, w, h ){
+			this.x = x;
+			this.y = y;
+			this.width = w;
+			this.height = h;
+		}
+
+		set_pos( x, y ){
+			this.x = x;
+			this.y = y;
+
+			this.connect_out_x = this.x + this.width;
+			this.connect_out_y = this.y + this.height/2;
+
+		}		
+
+		in_1_connect( gate ){
+			this.connect_in1.set( gate.connect_out_x , gate.connect_out_y, this.connect_in1_x , this.connect_in1_y );
+		}
+
+
+		update(){
+			if( this.input == 1 ){
+				this.output = 0;
+			}else{
+				this.output = 1;
+			}
+		}
+	};
+
+
+
+
+
+
+
+
+	class GATE_AND{
+		constructor(){
+			this.x = 300;
+			this.y = 100;
+			this.width = 100;
+			this.height = 100;
+			this.input_0 = 0;
+			this.input_1 = 0;
+			this.output = 0;
+			this.type = "AND";
+			
+			this.connect_in1 = new connection();
+			this.connect_in2 = new connection();
+			this.connect_out = new connection();
+
+			this.connect_in1_x = this.x - (this.width/2);
+			this.connect_in1_y = this.y - 30;
+		}
+
+
+		print(){
+			console.log("NOT gate:" );
+			console.log("\tx: " + this.x  );
+			console.log("\ty: " + this.y  );
+			console.log("\tin1: " + this.input_0 );
+			console.log("\tin2: " + this.input_1 );
+			console.log("\tout: " + this.output  );
+		}
+
+		draw(){
+			this.connect_in1.draw();
+			this.connect_in2.draw();
+			this.connect_out.draw();
+			ctx.drawImage( image_AND, this.x, this.y, this.width, this.height );
+		}
+
+		set_pos( x, y ){
+			this.x = x;
+			this.y = y;
+
+			this.connect_in1_x = this.x + this.width*0.1;
+			this.connect_in1_y = this.y + this.height*0.3;
+
+			this.connect_in2_x = this.x + this.width*0.1 ;
+			this.connect_in2_y = this.y + this.height*0.7;
+
+
+		}
+
+		set_param( x, y, w, h ){
+			this.x = x;
+			this.y = y;
+			this.width = w;
+			this.height = h;
+		}
+
+
+		in_1_connect( gate ){
+			this.connect_in1.set( gate.connect_out_x , gate.connect_out_y, this.connect_in1_x , this.connect_in1_y );
+		}
+
+		in_2_connect( gate ){
+			this.connect_in2.set( gate.connect_out_x , gate.connect_out_y, this.connect_in2_x , this.connect_in2_y );
+		}
+
+
+
+
+
+		update(){
+			if( this.input_0 == 1 && this.input_1 == 1){
+				this.output = 1;
+			}else{
+				this.output = 0;
+			}
+		}
+
+	}
+
+
+
+
+	class INPUT{
+		constructor(){
+			this.x = 0;
+			this.y = 0;
+			this.value = 0;
+			this.connect_out_x = 0;
+			this.connect_out_y = 0;
+		}
+
+		toggle(){
+			if( this.value == 0 ){
+				this.value = 1;
+			}else{
+				this.value = 0;
+			}
+		}
+
+
+		set_pos( x, y ){
+			this.x = x;
+			this.y = y;
+		}
+
+
+
+	};
+
+
+
+
+
+
+
+	var AND_1 = new GATE_AND();
+		AND_1.set_pos( 500, 500 );
+	
+	var NOT_1 = new GATE_NOT();
+		NOT_1.set_pos( 300,400 );
+
+	var NOT_2 = new GATE_NOT();
+		NOT_2.set_pos( 300,600 );
+
+	var INPUT_1 = new INPUT();
+		INPUT_1.set_pos(200,200);
+
+	AND_1.in_1_connect( NOT_1 );
+	AND_1.in_2_connect( NOT_2 );
+
+	NOT_1.in_1_connect( INPUT );
+
+
+
+
+
+
+	setInterval( function(){
+		
+		ctx.fillStyle = "#006699";
+		ctx.fillRect(0,0,window.innerWidth, window.innerHeight);
+		
+		AND_1.draw();
+		NOT_1.draw();
+		NOT_2.draw();
+		INPUT_1.draw();
+
+
+	}, 20 );
+
+
+
+
+</script>
+
+
+</html>

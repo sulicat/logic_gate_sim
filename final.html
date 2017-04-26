@@ -1,0 +1,497 @@
+<html>
+
+<head>
+	<title>logic app</title>
+</head>
+
+<canvas id="c" width="100" height="100" style="position: absolute; top: 0; left: 0;"></canvas>
+
+
+<button style="position: absolute; top: 100px; left: 200px;" onclick="data.toggle()" > toggle </button>
+<button style="position: absolute; top: 500px; left: 500px;" onclick="enable.toggle()" > toggle </button>
+
+
+<script type="text/javascript">
+	
+	var canvas = document.getElementById("c");
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+	var ctx = canvas.getContext("2d");
+
+	ctx.lineWidth = 5;
+
+	var image_NOT = new Image();
+	image_NOT.src = "NOT.png";
+
+	var image_AND = new Image();
+	image_AND.src = "AND.png";
+
+	var image_NAND = new Image();
+	image_NAND.src = "NAND.png";
+
+	var image_OR = new Image();
+	image_OR.src = "OR.png";
+
+	var image_NOR = new Image();
+	image_NOR.src = "NOR.png";
+
+
+	function sleep(milliseconds) {
+	  var start = new Date().getTime();
+	  for (var i = 0; i < 1e7; i++) {
+	    if ((new Date().getTime() - start) > milliseconds){
+	      break;
+	    }
+	  }
+	}
+
+	// this is the class that we can start a signal with. Basically our input.
+	class input{
+		constructor( x, y ){	
+			this.x 					= x;
+			this.y 					= y;
+			this.out_val 			= 0;
+			this.output_to			= null;
+			this.width 				= 20;
+			this.height 			= 20;
+
+			this.x_in_pos_1			= this.x + this.width;
+			this.y_in_pos_1			= this.y + this.height/2;
+
+			this.x_out_pos			= this.x + this.width;
+			this.y_out_pos			= this.y + this.height/2;
+
+		}
+
+		draw(){
+			if( this.out_val == 1 ){
+				ctx.fillStyle = "#00ff00";
+			}else{
+				ctx.fillStyle = "#000";
+			}
+			ctx.fillRect( this.x, this.y, this.width, this.height );
+		}
+
+		toggle(){
+			if( this.out_val == 1 )
+				this.out_val = 0;
+			else
+				this.out_val = 1;
+		}
+
+	}
+
+
+
+
+	class NOT{
+		constructor( x, y ){
+			this.x 					= x;
+			this.y 					= y;
+			this.width 				= 200;
+			this.height 			= 200;
+		
+			this.in_val_1			= 0;
+			this.out_val_1 			= 0;
+
+			this.x_in_pos_1			= this.x + this.width*0.12;
+			this.y_in_pos_1			= this.y + this.height*0.5;
+
+			this.x_in_pos_2			= this.x;
+			this.y_in_pos_2			= this.y;
+
+			this.x_out_pos			= this.x + this.width;
+			this.y_out_pos			= this.y + this.height/2;
+
+		}
+
+		draw( ){
+			ctx.drawImage( image_NOT, this.x, this.y, this.width, this.height );
+		}
+
+
+
+		update(){
+			if( this.in_val_1 == 1 ){
+				this.out_val = 0;
+			}else{
+				this.out_val = 1;
+			}
+		}
+
+	}
+
+
+
+
+
+
+
+	class AND{
+		constructor( x, y ){
+			this.x 					= x;
+			this.y 					= y;
+			this.width 				= 200;
+			this.height 			= 200;
+		
+			this.in_val_1			= 0;
+			this.out_val_1 			= 0;
+
+			this.x_in_pos_1			= this.x + this.width*0.12;
+			this.y_in_pos_1			= this.y + this.height*0.3;
+
+			this.x_in_pos_2			= this.x + this.width*0.12;
+			this.y_in_pos_2			= this.y + this.height*0.7;
+
+			this.x_out_pos			= this.x + this.width;
+			this.y_out_pos			= this.y + this.height/2;
+
+		}
+
+		draw( ){
+			ctx.drawImage( image_AND, this.x, this.y, this.width, this.height );
+		}
+
+
+
+		update(){
+			if( this.in_val_1 == 1 && this.in_val_2 == 1 ){
+				this.out_val = 1;
+			}else{
+				this.out_val = 0;
+			}
+		}
+
+	}
+
+
+
+
+	class NAND{
+		constructor( x, y ){
+			this.x 					= x;
+			this.y 					= y;
+			this.width 				= 200;
+			this.height 			= 200;
+		
+			this.in_val_1			= 0;
+			this.out_val_1 			= 0;
+
+			this.x_in_pos_1			= this.x + this.width*0.12;
+			this.y_in_pos_1			= this.y + this.height*0.3;
+
+			this.x_in_pos_2			= this.x + this.width*0.12;
+			this.y_in_pos_2			= this.y + this.height*0.7;
+
+			this.x_out_pos			= this.x + this.width;
+			this.y_out_pos			= this.y + this.height/2;
+
+		}
+
+		draw( ){
+			ctx.drawImage( image_NAND, this.x, this.y, this.width, this.height );
+		}
+
+
+
+		update(){
+			if( this.in_val_1 == 1 && this.in_val_2 == 1 ){
+				this.out_val = 0;
+			}else{
+				this.out_val = 1;
+			}
+		}
+
+	}
+
+
+
+
+
+
+
+
+
+	class OR{
+		constructor( x, y ){
+			this.x 					= x;
+			this.y 					= y;
+			this.width 				= 200;
+			this.height 			= 200;
+		
+			this.in_val_1			= 0;
+			this.out_val_1 			= 0;
+
+			this.x_in_pos_1			= this.x + this.width*0.2;
+			this.y_in_pos_1			= this.y + this.height*0.3;
+
+			this.x_in_pos_2			= this.x + this.width*0.2;
+			this.y_in_pos_2			= this.y + this.height*0.7;
+
+			this.x_out_pos			= this.x + this.width;
+			this.y_out_pos			= this.y + this.height/2;
+
+		}
+
+		draw( ){
+			ctx.drawImage( image_OR, this.x, this.y, this.width, this.height );
+		}
+
+
+
+		update(){
+			if( this.in_val_1 == 1 || this.in_val_2 == 1 ){
+				this.out_val = 1;
+			}else{
+				this.out_val = 0;
+			}
+		}
+
+	}
+
+
+
+
+
+
+	class NOR{
+		constructor( x, y ){
+			this.x 					= x;
+			this.y 					= y;
+			this.width 				= 200;
+			this.height 			= 200;
+		
+			this.in_val_1			= 0;
+			this.out_val_1 			= 0;
+
+			this.x_in_pos_1			= this.x + this.width*0.2;
+			this.y_in_pos_1			= this.y + this.height*0.3;
+
+			this.x_in_pos_2			= this.x + this.width*0.2;
+			this.y_in_pos_2			= this.y + this.height*0.7;
+
+			this.x_out_pos			= this.x + this.width;
+			this.y_out_pos			= this.y + this.height/2;
+
+		}
+
+		draw( ){
+			ctx.drawImage( image_NOR, this.x, this.y, this.width, this.height );
+		}
+
+
+
+		update(){
+			if( this.in_val_1 == 1 || this.in_val_2 == 1 ){
+				this.out_val = 0;
+			}else{
+				this.out_val = 1;
+			}
+		}
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	class connection{
+		constructor( out, input, input_pin ){
+			this.gate_from 			= out;
+			this.gate_to 			= input;
+			this.gate_to_pin 		= input_pin;
+			this.value 				= this.gate_from.out_val;
+		}
+
+
+		draw(){
+			if( this.value == 0 )
+				ctx.strokeStyle = "#000";
+			else
+				ctx.strokeStyle = "#00ff00";
+
+			if( this.gate_to_pin == 1 ){				
+				
+/*				var x_s = this.gate_from.x_out_pos;
+				var y_s = this.gate_from.y_out_pos;
+				var x_e = this.gate_to.x_in_pos_1;
+				var y_e = this.gate_to.y_in_pos_1;
+				var x_dff = x_e - x_s;
+				var y_dff = y_e - y_s;
+
+
+				ctx.beginPath();
+				ctx.moveTo( x_s, y_s );
+				ctx.lineTo( x_s + Math.abs(x_dff)/2, y_s );
+				ctx.lineTo( x_s + Math.abs(x_dff)/2, y_s + Math.abs(y_dff)/2 );
+				ctx.lineTo( x_e - Math.abs(x_dff)/2, y_s + Math.abs(y_dff)/2 );
+				ctx.lineTo( x_e - Math.abs(x_dff)/2, y_e );
+				ctx.lineTo( x_e, y_e );
+				ctx.stroke();*/
+
+				
+				ctx.beginPath();
+				ctx.moveTo( this.gate_from.x_out_pos, 		this.gate_from.y_out_pos );
+				ctx.lineTo( this.gate_to.x_in_pos_1, 		this.gate_to.y_in_pos_1 );
+				ctx.stroke();
+				
+
+			}else{
+				/*
+				var x_s = this.gate_from.x_out_pos;
+				var y_s = this.gate_from.y_out_pos;
+				var x_e = this.gate_to.x_in_pos_1;
+				var y_e = this.gate_to.y_in_pos_1;
+				var x_dff = x_e - x_s;
+				var y_dff = y_e - y_s;
+
+				
+				if( y_dff > 0 ){					
+					ctx.beginPath();
+					ctx.moveTo( x_s, y_s );
+					ctx.lineTo( x_s, y_s + Math.abs(y_dff)/2 );
+					ctx.lineTo( x_s, y_s + Math.abs(y_dff)/2 );
+					ctx.lineTo( x_s, y_e );
+					ctx.lineTo( x_e, y_e );
+					ctx.stroke();
+				}else{
+					ctx.beginPath();
+					ctx.moveTo( x_s, y_s );
+					ctx.lineTo( x_s, y_s - Math.abs(y_dff)/2 );
+					ctx.lineTo( x_s, y_s - Math.abs(y_dff)/2 );
+					ctx.lineTo( x_s, y_e );
+					ctx.lineTo( x_e, y_e );
+					ctx.stroke();
+				}*/
+					
+				ctx.beginPath();
+				ctx.moveTo( this.gate_from.x_out_pos, 		this.gate_from.y_out_pos );
+				ctx.lineTo( this.gate_to.x_in_pos_2, 		this.gate_to.y_in_pos_2 );
+				ctx.stroke();
+			
+			}
+		}
+
+
+		update(){
+			this.value = this.gate_from.out_val;
+			if( this.gate_to_pin == 1 )
+				this.gate_to.in_val_1 = this.value;
+			else
+				this.gate_to.in_val_2 = this.value
+
+				this.gate_to.update();
+
+
+		}
+
+
+	};
+
+
+
+
+
+
+
+
+
+
+
+	// draw the D-FlipFlop
+
+		// 2 inputs 
+	var data 			= new input( 100, 100 );
+	var enable			= new input( 450, 500 );
+	var not_1			= new NOT( 200, 150 );
+	var and_top			= new AND( 550, 200 );
+	var and_bottom		= new AND( 550, 650 );
+	var nor_top			= new NOR( 1000,300 );
+	var nor_bottom		= new NOR( 1000,600 );
+
+
+
+	function toggle_data(){
+		
+	}
+
+
+
+
+	// connecting the elements
+	var connections = [];
+		connections.push( new connection( data, not_1, 1) );			// data to not
+		connections.push( new connection( not_1, and_top, 1) );			// not to and 1
+		connections.push( new connection( enable, and_top, 2) );		// clock to and 1
+		connections.push( new connection( enable, and_bottom, 1) );		// clock to and 2
+		connections.push( new connection( data, and_bottom, 2) );		// data to and  2
+
+		connections.push( new connection( and_top, nor_top, 1) );		// data to and  2
+		connections.push( new connection( and_bottom, nor_bottom, 2) );		// data to and  2
+
+		connections.push( new connection( nor_top, nor_bottom, 1) );		// data to and  2
+		connections.push( new connection( nor_bottom, nor_top, 2) );		// data to and  2
+
+
+
+
+	
+	ctx.fillStyle = "#006699";
+	ctx.fillRect( 0,0, window.innerWidth, window.innerHeight );
+	for( var i = 0; i < connections.length; i++){
+		connections[i].draw();
+	}
+
+
+
+	// MAIN LOOP
+	var i = 0;
+	setInterval( function(){
+
+		
+		if( i >= connections.length - 1 ){
+			i = 0;
+		}else{
+			i++;
+		}
+
+
+		connections[i].draw();
+		connections[i].update();
+
+
+		data.draw();
+		not_1.draw();
+		enable.draw();
+		and_top.draw();
+		and_bottom.draw();
+		nor_top.draw();
+		nor_bottom.draw();
+
+
+		
+
+
+	},20 );
+
+
+
+
+
+
+</script>
+
+
+
+
+</html>
